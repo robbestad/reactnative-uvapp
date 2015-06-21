@@ -12,18 +12,16 @@ var {
   View,
   requireNativeComponent,
   } = React;
-//var {
-//  ForecastArc
-//  } = require('NativeModules');
-//
+
 var ForecastArc = requireNativeComponent('ForecastArc', null);
-var getRandomColor = require('./arc');
 var styles = require("./styles");
+
 var AdviseLow = "No protection necessary. Stay out and enjoy the sun!";
 var AdviseModerate = "Protect yourself with clothes, a sunhat and sunglasses, and consider using sunscreen. It's safe to stay outside for 1-2 hours at a time";
 var AdviseHigh = "Avoid the sun when it's at it's highest. Wear clothes, a sunhat and sunglasses, and apply sunscreen to avoid getting burnt.";
 var AdviseVeryHigh = "Do not stay in direct sunlight for more than 15 to 30 minutes at a time. Wear clothes, a sunhat and sunglasses, and apply sunscreen to avoid getting burnt.";
 var AdviseExtreme = "Stay in the shades and avoid direct sunlight for more than 5 to 15 minutes at a time. Wear clothes, a sunhat and sunglasses, and apply sunscreen to avoid getting burnt.";
+
 var uvapp = React.createClass({
   getInitialState(){
     return {
@@ -82,7 +80,7 @@ var uvapp = React.createClass({
           var fontColor = '#333333';
           var description = AdviseLow;
           var advice = 'Harmless';
-          var color = 'red';
+          var forecastColor = 'red';
           var parasol = {opacity: 0.5};
           var jumper = {opacity: 0.5};
           var cap = {opacity: 0.5};
@@ -91,13 +89,13 @@ var uvapp = React.createClass({
             background = styles.yellow;
             description = AdviseModerate;
             advice = 'Moderate';
-            color = "yellow";
+            forecastColor = "yellow";
           }
           if (uvresults.forecast.forecast > 5) {
             background = styles.orange;
             description = AdviseHigh;
             advice = 'High';
-            color = "orange";
+            forecastColor = "orange";
             parasol = {opacity: 0.5};
             jumper = {opacity: 0.5};
             cap = {opacity: 1};
@@ -108,7 +106,7 @@ var uvapp = React.createClass({
             fontColor = '#eeeeee';
             description = AdviseVeryHigh;
             advice = 'Very High';
-            color = "red";
+            forecastColor = "red";
             parasol = {opacity: 0.5};
             jumper = {opacity: 1};
             cap = {opacity: 1};
@@ -119,7 +117,7 @@ var uvapp = React.createClass({
             fontColor = '#eeeeee';
             description = AdviseExtreme;
             advice = 'Extreme';
-            color = "purple";
+            forecastColor = "purple";
             parasol = {opacity: 1};
             jumper = {opacity: 1};
             cap = {opacity: 1};
@@ -128,7 +126,7 @@ var uvapp = React.createClass({
           that.setState({
             loading: false,
             apiData: result,
-            forecastColor: color,
+            forecastColor: forecastColor,
             background: background,
             fontColor: fontColor,
             description: description,
@@ -177,6 +175,8 @@ var uvapp = React.createClass({
 
     function success(pos) {
       var coords = pos.coords;
+
+      // Some fake coordinates (for testing)
       // Sahara desert, Africa
       //coords.latitude = 23.416203;
       //coords.longitude = 25.66283;
@@ -189,23 +189,23 @@ var uvapp = React.createClass({
       // New York, USA
       //coords.latitude = 40.758895;
       //coords.longitude = -73.985131;
+
       that.setState({
         latitude: coords.latitude,
         longitude: coords.longitude
       });
     }
-
     function error(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
     }
-
     navigator.geolocation.getCurrentPosition(success, error, null);
   },
   componentDidMount(){
-    this.fetchCoordinates();
+    //this.fetchCoordinates();
+    this.setFakeCoordinates();
   },
-  setTestData(){
-    // Dummy data for testing
+  setFakeCoordinates(){
+    // Some fake data for testing
     this.setState({
       loading: false,
       apiData: {
@@ -307,10 +307,10 @@ var uvapp = React.createClass({
                            marginRight: 30,
                            marginTop: 9}}/>
           </View>
-
         </View>
       </View>
     );
   }
 });
+
 AppRegistry.registerComponent('uvapp', () => uvapp);

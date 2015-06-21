@@ -1,5 +1,4 @@
 var React = require('react-native');
-var getRandomColor = require('./arc');
 var fontSize = 16;
 var styles = React.StyleSheet.create({
   green: {
@@ -67,25 +66,6 @@ var styles = React.StyleSheet.create({
     shadowColor: '#333333',
     margin: 10
   },
-  arc: {
-    width: 200,
-    height: 110,
-    borderRadius: 10,
-    borderTopLeftRadius: 150,
-    borderTopRightRadius: 150,
-    borderColor: '#ffffff',
-    borderTopWidth: 20,
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    borderLeftColor: getRandomColor(),
-    borderTopColor: '#ffffff',
-    borderRightColor: '#ffffff',
-    borderBottomColor: 'transparent',
-    borderBottomWidth: 1,
-    backgroundColor: 'transparent'
-  },
   centering: {
     alignItems: 'center',
     justifyContent: 'center'
@@ -97,10 +77,11 @@ var styles = React.StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around'
   },
-  row: {flexDirection: 'row', marginLeft: 40, marginRight: 40, marginTop: 60},
-  sunglasses: {width: 43, height: 16, marginRight: 30, marginLeft: 30, marginTop: 20},
-  text: {flex: 1, justifyContent: 'center'},
-  title: {fontSize: 11, fontWeight: 'bold'},
-  subtitle: {fontSize: 10}
+  row: {
+    flexDirection: 'row',
+    marginLeft: 40,
+    marginRight: 40,
+    marginTop: 60
+  }
 });
 module.exports = styles;
