@@ -86,10 +86,18 @@ var styles = React.StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: 'transparent'
   },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  gray: {
+    backgroundColor: '#cccccc'
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
   row: {flexDirection: 'row', marginLeft: 40, marginRight: 40, marginTop: 60},
-  jumper: {width: 44, height: 38, marginRight: 35, marginTop: 10},
-  cap: {width: 44, height: 24, marginRight: 40, marginTop: 15},
-  parasol: {width: 36, height: 40, marginRight: 30, marginTop: 9},
   sunglasses: {width: 43, height: 16, marginRight: 30, marginLeft: 30, marginTop: 20},
   text: {flex: 1, justifyContent: 'center'},
   title: {fontSize: 11, fontWeight: 'bold'},
