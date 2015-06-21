@@ -240,7 +240,7 @@ var uvapp = React.createClass({
             system settings and allow access.
           </Text>
           <ActivityIndicatorIOS
-            style={[styles.centering, {marginTop: 150}]}
+            style={[styles.centering, {marginTop: 100}]}
             color="white"
             size="large"
             />
