@@ -2,7 +2,6 @@
 var React = require('react-native');
 var Request = require('superagent');
 var GOOGLE_API_KEY = require('./secret/google_api_key');
-
 var {
   AppRegistry,
   StyleSheet,
@@ -11,22 +10,28 @@ var {
   Image,
   NavigatorIOS,
   View,
+  requireNativeComponent,
   } = React;
+//var {
+//  ForecastArc
+//  } = require('NativeModules');
+//
+var ForecastArc = requireNativeComponent('ForecastArc', null);
 var getRandomColor = require('./arc');
 var styles = require("./styles");
-
 var AdviseLow = "No protection necessary. Stay out and enjoy the sun!";
 var AdviseModerate = "Protect yourself with clothes, a sunhat and sunglasses, and consider using sunscreen. It's safe to stay outside for 1-2 hours at a time";
 var AdviseHigh = "Avoid the sun when it's at it's highest. Wear clothes, a sunhat and sunglasses, and apply sunscreen to avoid getting burnt.";
 var AdviseVeryHigh = "Do not stay in direct sunlight for more than 15 to 30 minutes at a time. Wear clothes, a sunhat and sunglasses, and apply sunscreen to avoid getting burnt.";
 var AdviseExtreme = "Stay in the shades and avoid direct sunlight for more than 5 to 15 minutes at a time. Wear clothes, a sunhat and sunglasses, and apply sunscreen to avoid getting burnt.";
-
 var uvapp = React.createClass({
   getInitialState(){
     return {
       loading: true,
       longitude: 0,
       latitude: 0,
+      forecast: 0.001,
+      forecastColor: 'red',
       fontSize: 16,
       location: "",
       icons: {
@@ -43,9 +48,6 @@ var uvapp = React.createClass({
           opacity: 0.5
         }
       },
-      borderLeftColor: '#ffffff',
-      borderRightColor: '#ffffff',
-      borderTopColor: '#ffffff',
       fontColor: '#333333',
       background: styles.gray,
       textColor: styles.textBlack,
@@ -54,8 +56,8 @@ var uvapp = React.createClass({
       apiData: {
         result: {
           created: "", time: "", type: "",
-          coordinates: [0,0], forecast: {
-            forecast: "", clear_skies_index: "", partly_cloudy_index: "",
+          coordinates: [0, 0], forecast: {
+            forecast: 1, clear_skies_index: "", partly_cloudy_index: "",
             cloud_cover_parts_of_8: "", ozon_kg: "",
             snowcover_percentage: "", albedo_percentage: "",
             solar_zenith_angle: ""
@@ -64,123 +66,109 @@ var uvapp = React.createClass({
       }
     }
   },
-  fetchAPIData(long,lat){
+  fetchAPIData(long, lat){
     var that = this;
-    long = long || this.state.longitude.toString().replace(".",",");
-    lat = lat || this.state.latitude.toString().replace(".",",");
+    long = long || this.state.longitude.toString().replace(".", ",");
+    lat = lat || this.state.latitude.toString().replace(".", ",");
     Request
-      .get('http://uvapi.herokuapp.com/forecast/longitude='+long+'&latitude='+lat)
+      .get('http://uvapi.herokuapp.com/forecast/longitude=' + long + '&latitude=' + lat)
       .set('Accept', 'application/json')
       .end(function (err, res) {
-        if(err) console.log(err);
-        if(res){
-        var result = JSON.parse(res.text);
-        var uvresults = result.result.length ? result.result[0] : result.result;
-
-        var background = styles.green;
-        var fontColor = '#333333';
-        var description = AdviseLow;
-        var advice = 'Harmless';
-        var borderLeftColor = '#ffffff';
-        var borderRightColor= '#ffffff';
-        var borderTopColor= '#ffffff';
-        var parasol={opacity:0.5};
-        var jumper={opacity:0.5};
-        var cap={opacity:0.5};
-        var sunglasses={opacity:0.5};
-
-        if(uvresults.forecast.forecast >3){
-          background = styles.yellow;
-          description = AdviseModerate;
-          advice = 'Moderate';
-          borderLeftColor = '#FFE180';
-          borderRightColor= '#FFE180';
-          borderTopColor= '#FFE180';
-        }
-        if(uvresults.forecast.forecast >5){
-          background = styles.orange;
-          description = AdviseHigh;
-          advice = 'High';
-          borderLeftColor = '#FFC28D';
-          borderRightColor= '#FFC28D';
-          borderTopColor= '#FFC28D';
-          parasol={opacity:0.5};
-          jumper={opacity:0.5};
-          cap={opacity:1};
-          sunglasses={opacity:1};
-        }
-        if(uvresults.forecast.forecast >7){
-          background = styles.red;
-          fontColor = '#eeeeee';
-          description = AdviseVeryHigh;
-          advice = 'Very High';
-          borderLeftColor = '#FC9EA9';
-          borderRightColor= '#FC9EA9';
-          borderTopColor= '#FC9EA9';
-          parasol={opacity:0.5};
-          jumper={opacity:1};
-          cap={opacity:1};
-          sunglasses={opacity:1};
-        }
-        if(uvresults.forecast.forecast >9){
-          background = styles.purple;
-          fontColor = '#eeeeee';
-          description = AdviseExtreme;
-          advice = 'Extreme';
-          borderLeftColor = '#C3A4D7';
-          borderRightColor= '#C3A4D7';
-          borderTopColor= '#C3A4D7';
-          parasol={opacity:1};
-          jumper={opacity:1};
-          cap={opacity:1};
-          sunglasses={opacity:1};
-        }
-        that.setState({
-          loading: false,
-          apiData: result,
-          background: background,
-          fontColor: fontColor,
-          description: description,
-          advice: advice,
-          borderLeftColor: borderLeftColor,
-          borderRightColor: borderRightColor,
-          borderTopColor: borderTopColor,
-          icons:{parasol,jumper,cap,sunglasses}
-        });
+        if (err) console.log(err);
+        if (res) {
+          var result = JSON.parse(res.text);
+          var uvresults = result.result.length ? result.result[0] : result.result;
+          var background = styles.green;
+          var fontColor = '#333333';
+          var description = AdviseLow;
+          var advice = 'Harmless';
+          var color = 'red';
+          var parasol = {opacity: 0.5};
+          var jumper = {opacity: 0.5};
+          var cap = {opacity: 0.5};
+          var sunglasses = {opacity: 0.5};
+          if (uvresults.forecast.forecast > 3) {
+            background = styles.yellow;
+            description = AdviseModerate;
+            advice = 'Moderate';
+            color = "yellow";
+          }
+          if (uvresults.forecast.forecast > 5) {
+            background = styles.orange;
+            description = AdviseHigh;
+            advice = 'High';
+            color = "orange";
+            parasol = {opacity: 0.5};
+            jumper = {opacity: 0.5};
+            cap = {opacity: 1};
+            sunglasses = {opacity: 1};
+          }
+          if (uvresults.forecast.forecast > 7) {
+            background = styles.red;
+            fontColor = '#eeeeee';
+            description = AdviseVeryHigh;
+            advice = 'Very High';
+            color = "red";
+            parasol = {opacity: 0.5};
+            jumper = {opacity: 1};
+            cap = {opacity: 1};
+            sunglasses = {opacity: 1};
+          }
+          if (uvresults.forecast.forecast > 9) {
+            background = styles.purple;
+            fontColor = '#eeeeee';
+            description = AdviseExtreme;
+            advice = 'Extreme';
+            color = "purple";
+            parasol = {opacity: 1};
+            jumper = {opacity: 1};
+            cap = {opacity: 1};
+            sunglasses = {opacity: 1};
+          }
+          that.setState({
+            loading: false,
+            apiData: result,
+            forecastColor: color,
+            background: background,
+            fontColor: fontColor,
+            description: description,
+            advice: advice,
+            icons: {parasol, jumper, cap, sunglasses}
+          });
         }
       });
   },
-  shouldComponentUpdate(nextProps,nextState){
-    return(!(JSON.stringify(nextState)===JSON.stringify(this.state)));
+  shouldComponentUpdate(nextProps, nextState){
+    return (!(JSON.stringify(nextState) === JSON.stringify(this.state)));
   },
-  componentWillUpdate(nextProps,nextState){
-    if(nextState.longitude!==0){
-      var long=nextState.longitude;//22;
-      var lat=nextState.latitude;//34;
-      this.fetchAPIData(long,lat);
-      this.reverseGeoCoding(long,lat);
+  componentWillUpdate(nextProps, nextState){
+    if (nextState.longitude !== 0) {
+      var long = nextState.longitude;//22;
+      var lat = nextState.latitude;//34;
+      this.fetchAPIData(long, lat);
+      this.reverseGeoCoding(long, lat);
     }
   },
-  reverseGeoCoding(long,lat){
+  reverseGeoCoding(long, lat){
     var that = this;
-    long = long || this.state.longitude.toString().replace(".",",");
-    lat = lat || this.state.latitude.toString().replace(".",",");
-    var geocodingAPI = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&key='+GOOGLE_API_KEY;
-console.log(geocodingAPI);
+    long = long || this.state.longitude.toString().replace(".", ",");
+    lat = lat || this.state.latitude.toString().replace(".", ",");
+    var geocodingAPI = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat +
+      ',' + long + '&key=' + GOOGLE_API_KEY;
     Request
       .get(geocodingAPI)
       .set('Accept', 'application/json')
       .end(function (err, res) {
-        if(err){
+        if (err) {
           console.warn(err);
         }
-        if(res){
-        var result = JSON.parse(res.text);
-        var adress1 = result.results[0].formatted_address;
-        var adress2 = result.results[1].formatted_address;
-        that.setState({
-          location: adress2 ? adress2 : adress1
-        })
+        if (res) {
+          var result = JSON.parse(res.text);
+          var adress1 = result.results[0].formatted_address;
+          var adress2 = result.results[1].formatted_address;
+          that.setState({
+            location: adress2 ? adress2 : adress1
+          })
         }
       });
   },
@@ -189,44 +177,67 @@ console.log(geocodingAPI);
 
     function success(pos) {
       var coords = pos.coords;
-
       // Sahara desert, Africa
       //coords.latitude = 23.416203;
       //coords.longitude = 25.66283;
-
       // Oblast, Russia
       //coords.latitude = 59;
       //coords.longitude = 42;
-
       // Oslo, Norway
       //coords.latitude = 59.44;
       //coords.longitude = 9.05;
-
       // New York, USA
       //coords.latitude = 40.758895;
       //coords.longitude = -73.985131;
-
       that.setState({
         latitude: coords.latitude,
         longitude: coords.longitude
       });
     }
+
     function error(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
     }
+
     navigator.geolocation.getCurrentPosition(success, error, null);
   },
   componentDidMount(){
     this.fetchCoordinates();
   },
+  setTestData(){
+    // Dummy data for testing
+    this.setState({
+      loading: false,
+      apiData: {
+        result: {
+          forecast: {
+            forecast: 5
+          }
+        }
+      },
+      forecastColor: "red",
+      background: styles.green,
+      fontColor: "#443344",
+      description: AdviseModerate,
+      advice: "BE CAREFUL"
+    })
+  },
   render: function () {
-    if(this.state.loading){
+    if (this.state.loading) {
       return (
         <View style={[styles.gray, {height: 568}]}>
           <Text style={{textAlign: 'center',
                 color: this.state.fontColor,
+                fontWeight:900,
                 marginTop:100}}>
-            UV App
+            UV App is fetching your position
+          </Text>
+          <Text style={{textAlign: 'center',
+                color: this.state.fontColor,
+                margin:10}}>
+            If you have barred geolocation
+            access for this app, please go to your
+            system settings and allow access.
           </Text>
           <ActivityIndicatorIOS
             style={[styles.centering, {marginTop: 150}]}
@@ -238,6 +249,13 @@ console.log(geocodingAPI);
     return (
       <View style={this.state.background}>
         <View style={styles.container}>
+          <View style={{height: 100, width:300}}>
+            <ForecastArc style={{height: 300, width:300}}
+                         forecastValue={this.state.apiData.result.forecast.forecast}
+                         color={this.state.forecastColor}
+              />
+          </View>
+
           <Text style={{textAlign: 'center',
                         color: this.state.fontColor,
                         fontSize: this.state.fontSize,
@@ -245,23 +263,7 @@ console.log(geocodingAPI);
                         margin: 20}}>
             {this.state.location}
           </Text>
-          <View style={{width: 200,
-                        height: 110,
-                        borderRadius: 10,
-                        borderTopLeftRadius: 150,
-                        borderTopRightRadius: 150,
-                        borderColor: '#ffffff',
-                        borderTopWidth: 20,
-                        borderLeftWidth: 25,
-                        borderRightWidth: 25,
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0,
-                        borderLeftColor: this.state.borderLeftColor,
-                        borderTopColor: this.state.borderTopColor,
-                        borderRightColor: this.state.borderRightColor,
-                        borderBottomColor: 'transparent',
-                        borderBottomWidth: 1,
-                        backgroundColor: 'transparent'}} />
+
           <Text style={{fontSize:28,
                         marginLeft:20,
                         marginRight:20,
@@ -272,7 +274,7 @@ console.log(geocodingAPI);
           </Text>
           <Text style={{fontSize:this.state.fontSize,
                         marginTop:30,
-                        textAlign:'justify',
+                        textAlign:'center',
                         marginLeft:60,
                         marginRight:60,
                         color:this.state.fontColor}}>
