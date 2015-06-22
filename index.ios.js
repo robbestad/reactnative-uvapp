@@ -195,9 +195,11 @@ var uvapp = React.createClass({
         longitude: coords.longitude
       });
     }
+
     function error(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
     }
+
     navigator.geolocation.getCurrentPosition(success, error, null);
   },
   componentDidMount(){
@@ -228,7 +230,7 @@ var uvapp = React.createClass({
         <View style={[styles.gray, {height: 568}]}>
           <Text style={{textAlign: 'center',
                         color: this.state.fontColor,
-                        fontWeight:900,
+                        fontWeight:"900",
                         marginTop:100}}>
             UV App is fetching your position
           </Text>
