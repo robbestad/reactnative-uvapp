@@ -195,9 +195,11 @@ var uvapp = React.createClass({
         longitude: coords.longitude
       });
     }
+
     function error(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
     }
+
     navigator.geolocation.getCurrentPosition(success, error, null);
   },
   componentDidMount(){
