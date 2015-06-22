@@ -189,6 +189,9 @@ var uvapp = React.createClass({
       // New York, USA
       //coords.latitude = 40.758895;
       //coords.longitude = -73.985131;
+      // Barcelona, Spain
+        //coords.latitude = 41.385063;
+        //coords.longitude = 2.1734031;
 
       that.setState({
         latitude: coords.latitude,
@@ -251,20 +254,18 @@ var uvapp = React.createClass({
     return (
       <View style={this.state.background}>
         <View style={styles.container}>
-          <View style={{height: 100, width:300}}>
-            <ForecastArc style={{height: 300, width:300}}
+          <Text style={{color: this.state.fontColor,
+                        fontSize: this.state.fontSize,
+                        shadowColor: '#333333',
+                     marginTop:5}}>
+            {this.state.location}
+          </Text>
+            <ForecastArc style={[styles.centering, {padding:0,height: 156, width:320}]}
                          forecastValue={this.state.apiData.result.forecast.forecast}
                          color={this.state.forecastColor}
               />
-          </View>
 
-          <Text style={{textAlign: 'center',
-                        color: this.state.fontColor,
-                        fontSize: this.state.fontSize,
-                        shadowColor: '#333333',
-                        margin: 20}}>
-            {this.state.location}
-          </Text>
+
 
           <Text style={{fontSize:28,
                         marginLeft:20,

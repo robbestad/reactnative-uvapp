@@ -77,10 +77,10 @@
 
 #pragma mark - Arc
 - (void)drawRect:(CGRect)rect {
-  float heightOfArc=260.0;
+  float heightOfArc=1.0;
   float widthOfArc=236.0;
-  float startXPosArc=42.0;
-  float startYPosArc=38.0;
+  float startXPosArc=0.0;
+  float startYPosArc=0.0;
   float coloredAngle=0.0;
   
   if(debug) NSLog(@"forecastArc: %f",_forecastvalue);
@@ -101,7 +101,7 @@
   // Background ARC
   CAShapeLayer *arc = [CAShapeLayer layer];
   arc.path=[UIBezierPath bezierPathWithArcCenter:CGPointMake(0, 25) radius: CGRectGetWidth(oval2Rect) / 2 startAngle: (180) * M_PI/180 endAngle: 360 * M_PI/180 clockwise: YES].CGPath;
-  arc.position = CGPointMake(160,160);
+  arc.position = CGPointMake(160,120);
   arc.fillColor = [UIColor clearColor].CGColor;
   arc.strokeColor = [UIColor whiteColor].CGColor;
   arc.lineWidth = 24;
@@ -128,10 +128,10 @@
   /* Foreground arc */
   arc = [CAShapeLayer layer];
   arc.path=[UIBezierPath bezierPathWithArcCenter:CGPointMake(0, 25) radius: CGRectGetWidth(oval2Rect) / 2 startAngle: (180) * M_PI/180 endAngle: (180+coloredAngle) * M_PI/180 clockwise: YES].CGPath;
-  arc.position = CGPointMake(160,160);
+  arc.position = CGPointMake(160,120);
   arc.fillColor = [UIColor clearColor].CGColor;
   arc.strokeColor = _forecastcolor.CGColor;
-  arc.lineWidth = 24;
+  arc.lineWidth = 26;
   
   
   CABasicAnimation* drawAnimationFg = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
@@ -164,7 +164,7 @@
   float heightOfArc=260.0;
   float widthOfArc=236.0;
   float startXPosArc=42.0;
-  float startYPosArc=38.0;
+  float startYPosArc=0.0;
   float coloredAngle=0.0;
   
   if(debug) NSLog(@"forecastArc: %f",_forecastvalue);
