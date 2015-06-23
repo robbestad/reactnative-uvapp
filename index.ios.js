@@ -76,6 +76,7 @@ var uvapp = React.createClass({
         if (res) {
           var result = JSON.parse(res.text);
           var uvresults = result.result.length ? result.result[0] : result.result;
+
           var background = styles.green;
           var fontColor = '#333333';
           var description = AdviseLow;
@@ -125,7 +126,7 @@ var uvapp = React.createClass({
           }
           that.setState({
             loading: false,
-            apiData: result,
+            apiData: {result:uvresults},
             forecastColor: forecastColor,
             background: background,
             fontColor: fontColor,
@@ -190,8 +191,8 @@ var uvapp = React.createClass({
       //coords.latitude = 40.758895;
       //coords.longitude = -73.985131;
       // Barcelona, Spain
-        //coords.latitude = 41.385063;
-        //coords.longitude = 2.1734031;
+        coords.latitude = 41.385063;
+        coords.longitude = 2.1734031;
 
       that.setState({
         latitude: coords.latitude,
