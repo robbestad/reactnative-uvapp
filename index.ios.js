@@ -191,8 +191,8 @@ var uvapp = React.createClass({
       //coords.latitude = 40.758895;
       //coords.longitude = -73.985131;
       // Barcelona, Spain
-        coords.latitude = 41.385063;
-        coords.longitude = 2.1734031;
+      //  coords.latitude = 41.385063;
+      //  coords.longitude = 2.1734031;
 
       that.setState({
         latitude: coords.latitude,
